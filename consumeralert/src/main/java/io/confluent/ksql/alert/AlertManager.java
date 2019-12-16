@@ -1,7 +1,6 @@
 package io.confluent.ksql.alert;
 
 import io.confluent.command.record.alert.CommandAlert;
-import io.confluent.ksql.alert.api.ResultTopicKey;
 import io.confluent.ksql.alert.api.ResultTopicValue;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,12 +11,14 @@ public class AlertManager {
 
   String slackurl = "";
   long intervalMs = 0;
-  List<Node> list = new LinkedList<Node>();
-  Map<String, Node> map = new HashMap<String, Node>();
+  List<Node> list = null;
+  Map<String, Node> map = null;
 
   public AlertManager(String slackurl, long intervalMs) {
     this.slackurl = slackurl;
     this.intervalMs = intervalMs;
+    this.list = new LinkedList<Node>();
+    this.map = new HashMap<String, Node>();
   }
 
   class Node {
@@ -50,7 +51,7 @@ public class AlertManager {
     for (Node node : list) {
       if (System.currentTimeMillis() - node.getTimestamp() > intervalMs) {
         list.remove(node);
-        map.remove(node);
+        map.remove(node.getResultTopicValue().getOpid());
       } else {
         break;
       }
@@ -61,11 +62,11 @@ public class AlertManager {
     evict();
     long current = System.currentTimeMillis();
     Node node = new Node(current, resultTopicValue);
-    if ( map.get(resultTopicValue.getOpid()) == null ) {
+    if ( map.size() == 0 || map.get(resultTopicValue.getOpid()) == null ) {
       sendAlert(node);
+      list.add(node);
+      map.put(resultTopicValue.getOpid(), node);
     }
-    list.add(node);
-    map.put(resultTopicValue.getOpid(), node);
   }
 
   private void sendAlert(Node node){

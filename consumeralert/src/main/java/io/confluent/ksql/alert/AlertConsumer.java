@@ -2,7 +2,6 @@ package io.confluent.ksql.alert;
 
 import io.confluent.ksql.alert.serde.KafkaJsonDeserializer;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -41,9 +40,11 @@ public class AlertConsumer implements Runnable {
       }
       while (!Thread.currentThread().isInterrupted()) {
         try {
-          ConsumerRecords<ResultTopicKey, ResultTopicValue> records = this.consumer.poll(Duration.ofMillis(500));
+          ConsumerRecords<ResultTopicKey, ResultTopicValue> records = this.consumer.poll(500);
           for (ConsumerRecord<ResultTopicKey, ResultTopicValue> record : records) {
-            this.alertManager.mayBeSendAlert(record.value());
+            if (record.value() != null ) {
+              this.alertManager.mayBeSendAlert(record.value());
+            }
           }
         } catch (Exception e) {
           log.error("error consuming message", e);

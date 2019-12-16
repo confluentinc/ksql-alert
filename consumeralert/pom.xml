@@ -10,14 +10,37 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
+        <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <source>8</source>
-          <target>8</target>
+          <archive>
+            <manifest>
+              <mainClass>io.confluent.ksql.alert.ConsumerAlertApplication</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
         </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <!-- bind to the packaging phase -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
   <dependencies>
     <dependency>
@@ -30,6 +53,16 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.9.10.1</version>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.apache.kafka</groupId>-->
+      <!--<artifactId>kafka-clients</artifactId>-->
+      <!--<version>5.4.0-ce-SNAPSHOT</version>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>2.2.0</version>
+    </dependency>
     <dependency>
       <groupId>com.spotify</groupId>
       <artifactId>docker-client</artifactId>
@@ -39,6 +72,22 @@
       <groupId>io.confluent</groupId>
       <artifactId>confluent-serializers-new</artifactId>
       <version>5.4.0-ce-SNAPSHOT</version>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>ch.qos.logback</groupId>-->
+      <!--<artifactId>logback-classic</artifactId>-->
+      <!--<version>1.1.7</version>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.7</version>
     </dependency>
   </dependencies>
 

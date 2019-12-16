@@ -4,7 +4,6 @@ import io.confluent.command.record.alert.CommandAlert;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import io.confluent.serializers.ProtoSerde;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -48,7 +47,7 @@ public class WebhookSender {
 
   public String constructPayloadFormat() {
     ProtoSerde<CommandAlert.Slack> slackProtoSerde =
-        new ProtoSerde<>(CommandAlert.Slack.getDefaultInstance());
+        new ProtoSerde<CommandAlert.Slack>(CommandAlert.Slack.getDefaultInstance());
     String content = slackProtoSerde.toJson(webHookAction.getSlack(), true);
     return content;
   }

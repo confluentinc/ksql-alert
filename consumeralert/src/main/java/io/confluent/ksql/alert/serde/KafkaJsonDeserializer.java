@@ -16,12 +16,10 @@ public class KafkaJsonDeserializer<T> implements Deserializer {
     this.type = type;
   }
 
-  @Override
   public void configure(Map map, boolean b) {
 
   }
 
-  @Override
   public Object deserialize(String s, byte[] bytes) {
     ObjectMapper mapper = new ObjectMapper();
     T obj = null;
@@ -33,7 +31,6 @@ public class KafkaJsonDeserializer<T> implements Deserializer {
     return obj;
   }
 
-  @Override
   public void close() {
 
   }
