@@ -28,7 +28,6 @@ public class KafkaJsonDeserializer<T> implements Deserializer {
     try {
       obj = mapper.readValue(bytes, type);
     } catch (Exception e) {
-
       logger.error(e.getMessage());
     }
     return obj;

@@ -71,7 +71,7 @@ public class AlertManager {
   private void sendAlert(Node node){
     CommandAlert.Slack slack = CommandAlert.Slack
         .newBuilder()
-        .setText(String.format("Delay latency for operator {} is {}.",
+        .setText(String.format("Delay latency for operator %s is %s.",
             node.getResultTopicValue().getOpid(),
             node.getResultTopicValue().getDelayAvg()))
         .build();

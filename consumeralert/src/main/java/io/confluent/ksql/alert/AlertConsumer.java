@@ -3,6 +3,7 @@ package io.confluent.ksql.alert;
 import io.confluent.ksql.alert.serde.KafkaJsonDeserializer;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -28,8 +29,8 @@ public class AlertConsumer implements Runnable {
         <ResultTopicKey, ResultTopicValue>(properties,
         new KafkaJsonDeserializer<ResultTopicKey>(ResultTopicKey.class),
         new KafkaJsonDeserializer<ResultTopicValue>(ResultTopicValue.class));
+    consumer.subscribe(Collections.singletonList("result"));
     this.alertManager = alertManager;
-
   }
 
   public void run() {

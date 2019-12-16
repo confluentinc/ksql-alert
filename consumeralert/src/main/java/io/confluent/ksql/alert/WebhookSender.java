@@ -1,12 +1,14 @@
 package io.confluent.ksql.alert;
 
 import io.confluent.command.record.alert.CommandAlert;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
 import io.confluent.serializers.ProtoSerde;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +23,8 @@ public class WebhookSender {
     this.webHookAction = webHookAction;
   }
 
-  public HttpResponse sendWebHook() {
-    HttpResponse rawResponse = null;
+  public String sendWebHook() {
+    String rawResponse = null;
     try {
       HttpPost httppost = new HttpPost(webHookAction.getUrl());
       String payload = constructPayloadFormat();
@@ -31,7 +33,8 @@ public class WebhookSender {
           ContentType.APPLICATION_JSON);
       httppost.setEntity(requestEntity);
       HttpClient httpclient = HttpClients.createDefault();
-      rawResponse = httpclient.execute(httppost);
+      ResponseHandler<String> responseHandler=new BasicResponseHandler();
+      rawResponse = httpclient.execute(httppost, responseHandler);
     } catch (Exception e) {
       log.warn(
           "sending=failure webhook to={} with subject={} {}",
